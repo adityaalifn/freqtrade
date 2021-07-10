@@ -140,8 +140,16 @@ class Wallets:
         # Ensure <tradable_balance_ratio>% is used from the overall balance
         # Otherwise we'd risk lowering stakes with each open trade.
         # (tied up + current free) * ratio) - tied up
-        available_amount = ((val_tied_up + self.get_free(self._config['stake_currency'])) *
-                            self._config['tradable_balance_ratio']) - val_tied_up
+        if "available_capital" in self._config:
+            starting_balance = self._config['available_capital']
+            tot_profit = Trade.get_total_closed_profit()
+            current_capital = starting_balance - val_tied_up + tot_profit
+
+            free = self.get_free(self._config['stake_currency'])
+            available_amount = min(current_capital, free)
+        else:
+            available_amount = ((val_tied_up + self.get_free(self._config['stake_currency'])) *
+                                self._config['tradable_balance_ratio']) - val_tied_up
         return available_amount
 
     def _calculate_unlimited_stake_amount(self, available_amount: float,
