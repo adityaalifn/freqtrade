@@ -137,9 +137,6 @@ class Wallets:
         (<open_trade stakes> + free amount) * tradable_balance_ratio - <open_trade stakes>
         """
 
-        # Ensure <tradable_balance_ratio>% is used from the overall balance
-        # Otherwise we'd risk lowering stakes with each open trade.
-        # (tied up + current free) * ratio) - tied up
         if "available_capital" in self._config:
             starting_balance = self._config['available_capital']
             tot_profit = Trade.get_total_closed_profit()
@@ -148,6 +145,9 @@ class Wallets:
             free = self.get_free(self._config['stake_currency'])
             available_amount = min(current_capital, free)
         else:
+            # Ensure <tradable_balance_ratio>% is used from the overall balance
+            # Otherwise we'd risk lowering stakes with each open trade.
+            # (tied up + current free) * ratio) - tied up
             available_amount = ((val_tied_up + self.get_free(self._config['stake_currency'])) *
                                 self._config['tradable_balance_ratio']) - val_tied_up
         return available_amount
