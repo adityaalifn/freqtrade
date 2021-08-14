@@ -41,6 +41,11 @@ class RPCManager:
             apiserver.add_rpc_handler(self._rpc)
             self.registered_modules.append(apiserver)
 
+        if config.get('rabbitmq', {}).get('enabled', False):
+            logger.info('Enabling rpc.rabbitmq ...')
+            from freqtrade.rpc.rabbitmq import RabbitMQ
+            self.registered_modules.append(RabbitMQ(self._rpc, config))
+
     def cleanup(self) -> None:
         """ Stops all enabled rpc modules """
         logger.info('Cleaning up rpc modules ...')
