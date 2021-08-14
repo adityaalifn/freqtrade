@@ -31,6 +31,7 @@ class RabbitMQ(RPCHandler):
 
         channel.queue_declare('freqtrade')
 
+        print(msg)
         channel.basic_publish(exchange='', routing_key='freqtrade', body=json.dumps(msg))
 
         connection.close()
