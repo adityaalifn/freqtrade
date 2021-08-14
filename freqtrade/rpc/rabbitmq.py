@@ -1,4 +1,5 @@
 import json
+import ssl
 from typing import Dict, Any
 
 import pika
@@ -19,7 +20,9 @@ class RabbitMQ(RPCHandler):
 
     def send_msg(self, msg: Dict[str, str]) -> None:
         credential = pika.credentials.PlainCredentials(self._username, self._password)
-        conn_params = pika.ConnectionParameters(self._host, credentials=credential, port=5671)
+        context = ssl.create_default_context()
+        ssl_option = pika.SSLOptions(context)
+        conn_params = pika.ConnectionParameters(self._host, credentials=credential, port=5671, ssl_options=ssl_option)
         connection = pika.BlockingConnection(conn_params)
         channel = connection.channel()
 
