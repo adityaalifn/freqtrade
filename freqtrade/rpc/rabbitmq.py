@@ -19,7 +19,7 @@ class RabbitMQ(RPCHandler):
 
     def send_msg(self, msg: Dict[str, str]) -> None:
         credential = pika.credentials.PlainCredentials(self._username, self._password)
-        conn_params = pika.ConnectionParameters(self._host, credentials=credential)
+        conn_params = pika.ConnectionParameters(self._host, credentials=credential, port=5671)
         connection = pika.BlockingConnection(conn_params)
         channel = connection.channel()
 
