@@ -20,6 +20,8 @@ class RabbitMQ(RPCHandler):
         pass
 
     def send_msg(self, msg: Dict[str, str]) -> None:
+        if type(msg) != dict:
+            return
         credential = pika.credentials.PlainCredentials(self._username, self._password)
         context = ssl.create_default_context()
         ssl_option = pika.SSLOptions(context)
@@ -29,6 +31,6 @@ class RabbitMQ(RPCHandler):
 
         channel.queue_declare('freqtrade')
 
-        channel.basic_publish(exchange='', routing_key='freqtrade', body="test hello")
+        channel.basic_publish(exchange='', routing_key='freqtrade', body=json.dumps(msg))
 
         connection.close()
