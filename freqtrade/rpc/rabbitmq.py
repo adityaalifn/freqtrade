@@ -1,5 +1,6 @@
 import json
 import ssl
+from distutils.log import log
 from typing import Dict, Any
 
 import pika
@@ -27,6 +28,7 @@ class RabbitMQ(RPCHandler):
         channel = connection.channel()
 
         channel.queue_declare('freqtrade')
-        channel.basic_publish(exchange='', routing_key='freqtrade', body=json.dumps(msg, indent=4).encode('utf-8'))
+
+        channel.basic_publish(exchange='', routing_key='freqtrade', body="test hello")
 
         connection.close()
